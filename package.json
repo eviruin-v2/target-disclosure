@@ -3,6 +3,6 @@
   "version": "1.0.0",
   "scripts": {
     "start": "vercel dev",
-    "build": "node exploit.js && exit 0"
+    "build": "node verify-poison.js"
   }
 }
