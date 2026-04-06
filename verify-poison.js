@@ -3,7 +3,6 @@ const { VERCEL_ARTIFACTS_TOKEN, VERCEL_ARTIFACTS_ID } = process.env;
 async function verify() {
     console.log("[#] === VERCEL INTEGRITY VERIFICATION ===");
     
-    // Hash yang sama dengan yang di-upload Akun A
     const artifactHash = "h1_poc_3v1rn_999"; 
     const url = `https://api.vercel.com/v8/artifacts/${artifactHash}`;
 
@@ -13,7 +12,6 @@ async function verify() {
         const res = await fetch(url, {
             method: 'GET',
             headers: {
-                // Pakai token asli Akun B (Legal)
                 'Authorization': `Bearer ${VERCEL_ARTIFACTS_TOKEN}`
             }
         });
